@@ -43,8 +43,6 @@ All tweaks are optional and logged. Backups and restore points are created autom
 
 - Report bugs or suggest features via [Issues](https://github.com/Jisll/windows11/issues).
 - Submit code via Pull Requests.
-- Join discussions in our [Discord](https://discord.gg/perfectwindows).
-
 ## Support
 
 - [Wiki Guide](https://github.com/Jisll/windows11/wiki)
