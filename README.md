@@ -1,124 +1,58 @@
-<h1 align="center">
-  <img src="https://images.pling.com/img/00/00/64/66/02/1700514/11.png" width="48" alt="Windows 11 Logo">
-  Perfect Windows 11: Elevate Your Experience
-</h1>
+# Perfect Windows 11
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Jisll/windows11/main/perfectwindows.png" alt="Perfect Windows 11 Banner" width="800">
-</p>
+![Perfect Windows 11 Banner](https://i.imgur.com/u9W2jZo.png)
 
-<p align="center">
-  <em>Unleash the full potential of Windows 11 with advanced optimizations, customizations, and tweaks.</em>
-</p>
+A safe, configurable batch script to optimize Windows 11: enhance privacy, tune services, boost performance, and apply custom tweaks. All changes are toggleable and reversible.
 
-<p align="center">
-  <a href="#-features">Features</a> •
-  <a href="#-quick-start">Quick Start</a> •
-  <a href="#-usage">Usage</a> •
-  <a href="#-contribute">Contribute</a> •
-  <a href="#-support">Support</a> •
-  <a href="#-license">License</a>
-</p>
+[![Stars](https://img.shields.io/github/stars/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/stargazers)
+[![Forks](https://img.shields.io/github/forks/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/network/members)
+[![Issues](https://img.shields.io/github/issues/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/issues)
+[![License](https://img.shields.io/github/license/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/blob/main/LICENSE.md)
 
-<p align="center">
-  <a href="https://github.com/Jisll/windows11/stargazers"><img src="https://img.shields.io/github/stars/Jisll/windows11?style=for-the-badge" alt="Stars"></a>
-  <a href="https://github.com/Jisll/windows11/network/members"><img src="https://img.shields.io/github/forks/Jisll/windows11?style=for-the-badge" alt="Forks"></a>
-  <a href="https://github.com/Jisll/windows11/issues"><img src="https://img.shields.io/github/issues/Jisll/windows11?style=for-the-badge" alt="Issues"></a>
-  <a href="https://github.com/Jisll/windows11/blob/main/LICENSE.md"><img src="https://img.shields.io/github/license/Jisll/windows11?style=for-the-badge" alt="License"></a>
-</p>
+## Features
 
----
+- **Privacy Hardening**: Disable telemetry, ads, and data collection.
+- **Service Tuning**: Safe optimization (keeps HID/biometrics; optional login safeguard).
+- **Gaming Tweaks**: Disable GameDVR, optimize scheduler and multimedia.
+- **UI Customizations**: Remove taskbar ads, suggestions, and unnecessary buttons.
+- **Network Optimizations**: Disable Wi-Fi Sense and feeds.
+- **Power Management**: Disable hibernation for disk savings (affects Fast Startup).
+- **Safe Cleanup**: Clear temp files and caches (no prefetch/logs).
+- **Advanced Options**: Group svchost, enable legacy boot menu, disable mitigations (not recommended).
+- **Restore Tools**: Revert changes via built-in options or registry backups.
 
-## 🌟 Welcome to Perfect Windows 11
+All tweaks are optional and logged. Backups and restore points are created automatically.
 
-Transform your Windows 11 experience with our comprehensive toolkit of optimizations, customizations, and tweaks. Perfect Windows 11 is designed to enhance performance, improve privacy, and unlock hidden features of your operating system.
+## Quick Start
 
-## 🚀 Quick Start
+1. Clone the repo: `git clone https://github.com/Jisll/windows11`
+2. Run as Admin: Double-click `Start Optimize Windows.bat`
+3. Toggle options in the menu.
+4. Apply changes and reboot.
 
-Get started with these simple steps:
+**Pro Tip**: Backup data and create a restore point first.
 
-1. **Clone the Repository**
-   ```
-   git clone https://github.com/Jisll/windows11
-   ```
+## Usage
 
-2. **Navigate to the Script**
-   Locate `Start Optimize Windows.bat` in the cloned repository.
+- Launch the script to see the menu with toggles (ON/OFF).
+- Preview changes with [P], apply with [A], restore with [R].
+- Logs and backups saved in `_perfectwindows` folder.
+- Monitor system after changes; reboot to apply fully.
 
-3. **Run the Script**
-   Double-click the script to begin the optimization process.
+## Contribute
 
-4. **Backup Your Data**
-   Always create a backup before making system changes.
+- Report bugs or suggest features via [Issues](https://github.com/Jisll/windows11/issues).
+- Submit code via Pull Requests.
+- Join discussions in our [Discord](https://discord.gg/perfectwindows).
 
-5. **Reboot**
-   Restart your system to apply all changes.
+## Support
 
-## 🛠 Features
+- [Wiki Guide](https://github.com/Jisll/windows11/wiki)
+- [FAQ](https://github.com/Jisll/windows11/wiki/FAQ)
+- Open an [Issue](https://github.com/Jisll/windows11/issues) for help.
 
-<table>
-  <tr>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/settings.png"/><br><b>Service Configuration</b></td>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/privacy.png"/><br><b>Privacy Enhancements</b></td>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/speed.png"/><br><b>Performance Boost</b></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/delete-file.png"/><br><b>Telemetry Management</b></td>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/broom.png"/><br><b>System Cleanup</b></td>
-    <td align="center"><img src="https://img.icons8.com/color/48/000000/paint-palette.png"/><br><b>UI Customization</b></td>
-  </tr>
-</table>
+## License
 
-- **Advanced Service Configuration**: Fine-tune system services for optimal performance.
-- **Enhanced Privacy Controls**: Limit data collection and improve overall system privacy.
-- **Boot Menu Optimization**: Switch between Legacy and UEFI boot modes seamlessly.
-- **Temporary File Cleanup**: Free up valuable disk space automatically.
-- **Power Management**: Optimize power settings for better battery life or maximum performance.
-- **UI Customization**: Personalize your Windows 11 experience with advanced tweaks.
+MIT License - see [LICENSE.md](https://github.com/Jisll/windows11/blob/main/LICENSE.md).
 
-## 📊 Usage
-
-1. **Review Options**: Carefully read through the available optimizations before applying.
-2. **Select Tweaks**: Choose the specific enhancements you want to apply.
-3. **Apply Changes**: Run the script and follow the on-screen prompts.
-4. **Monitor Performance**: Keep track of system changes and performance improvements.
-
-> 💡 **Pro Tip**: Create a system restore point before applying any tweaks for easy rollback if needed.
-
-## 🤝 Contribute
-
-We welcome contributions from the community! Here's how you can help:
-
-- **Report Bugs**: Open an issue for any bugs you encounter.
-- **Suggest Enhancements**: Have ideas? We'd love to hear them!
-- **Submit Pull Requests**: Help us improve the project with your code.
-
-Join our [community chat](https://discord.gg/perfectwindows) to discuss ideas and get support.
-
-## 🆘 Support
-
-Need help? We've got you covered:
-
-- **Documentation**: Check our [detailed guide](https://github.com/Jisll/windows11/wiki) for in-depth information.
-- **FAQ**: Find answers to common questions in our [FAQ section](https://github.com/Jisll/windows11/wiki/FAQ).
-- **Issues**: For technical issues, please open a [GitHub issue](https://github.com/Jisll/windows11/issues).
-
-## ⚖️ License
-
-This project is licensed under the MIT License. See the [LICENSE.md](https://github.com/Jisll/windows11/blob/main/LICENSE.md) file for details.
-
-## 👏 Acknowledgments
-
-A huge thank you to all our contributors, testers, and users. Your support and feedback make Perfect Windows 11 possible!
-
-<p align="center">
-  <img src="https://img.icons8.com/color/48/000000/windows-10.png" alt="Windows Logo">
-  <br>
-  <em>Elevate your Windows 11 experience to perfection.</em>
-</p>
-
----
-
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/Jisll">Jisll</a>
-</p>
+Made with ❤️ by [Václav](https://github.com/vacisdev).
