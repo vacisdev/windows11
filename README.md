@@ -45,8 +45,6 @@ All tweaks are optional and logged. Backups and restore points are created autom
 - Submit code via Pull Requests.
 ## Support
 
-- [Wiki Guide](https://github.com/Jisll/windows11/wiki)
-- [FAQ](https://github.com/Jisll/windows11/wiki/FAQ)
 - Open an [Issue](https://github.com/Jisll/windows11/issues) for help.
 
 ## License
