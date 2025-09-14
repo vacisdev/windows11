@@ -4,10 +4,10 @@
 
 A safe, configurable batch script to optimize Windows 11: enhance privacy, tune services, boost performance, and apply custom tweaks. All changes are toggleable and reversible.
 
-[![Stars](https://img.shields.io/github/stars/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/stargazers)
-[![Forks](https://img.shields.io/github/forks/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/network/members)
-[![Issues](https://img.shields.io/github/issues/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/issues)
-[![License](https://img.shields.io/github/license/Jisll/windows11?style=for-the-badge)](https://github.com/Jisll/windows11/blob/main/LICENSE.md)
+[![Stars](https://img.shields.io/github/stars/vacisdev/windows11?style=for-the-badge)](https://github.com/vacisdev/windows11/stargazers)
+[![Forks](https://img.shields.io/github/forks/vacisdev/windows11?style=for-the-badge)](https://github.com/vacisdev/windows11/network/members)
+[![Issues](https://img.shields.io/github/issues/vacisdev/windows11?style=for-the-badge)](https://github.com/vacisdev/windows11/issues)
+[![License](https://img.shields.io/github/license/vacisdev/windows11?style=for-the-badge)](https://github.com/vacisdev/windows11/blob/main/LICENSE.md)
 
 ## Features
 
@@ -25,7 +25,7 @@ All tweaks are optional and logged. Backups and restore points are created autom
 
 ## Quick Start
 
-1. Clone the repo: `git clone https://github.com/Jisll/windows11`
+1. Clone the repo: `git clone https://github.com/vacisdev/windows11`
 2. Run as Admin: Double-click `Start Optimize Windows.bat`
 3. Toggle options in the menu.
 4. Apply changes and reboot.
@@ -41,14 +41,14 @@ All tweaks are optional and logged. Backups and restore points are created autom
 
 ## Contribute
 
-- Report bugs or suggest features via [Issues](https://github.com/Jisll/windows11/issues).
+- Report bugs or suggest features via [Issues](https://github.com/vacisdev/windows11/issues).
 - Submit code via Pull Requests.
 ## Support
 
-- Open an [Issue](https://github.com/Jisll/windows11/issues) for help.
+- Open an [Issue](https://github.com//windows11/issues) for help.
 
 ## License
 
-MIT License - see [LICENSE.md](https://github.com/Jisll/windows11/blob/main/LICENSE.md).
+MIT License - see [LICENSE.md](https://github.com//windows11/blob/main/LICENSE.md).
 
 Made with ❤️ by [Václav](https://github.com/vacisdev).
