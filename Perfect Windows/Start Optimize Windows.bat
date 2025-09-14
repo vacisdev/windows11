@@ -1,403 +1,504 @@
 @echo off
-cd /d "%~dp0"
-chcp 65001 >nul 2>&1
-mode con lines=30 cols=136
-setlocal enabledelayedexpansion
-title Perfect Windows
-call :Colors
+setlocal EnableExtensions EnableDelayedExpansion
 
-REM Check for Administrator Privileges
-whoami /groups | findstr /i /c:"S-1-16-12288" >nul 2>&1 || (echo %BRIGHT_BLACK%To continue, run this tool as %DARK_RED%administrator%DARK_WHITE%. && pause && exit)
+chcp 65001 >nul
+title Perfect Windows - Safe Configurable Tweaks
 
-REM Main Menu
-:Main-Menu
-cls
-echo.
-echo  %WHITE%███████%BRIGHT_RED%╗ %WHITE%██████%BRIGHT_RED%╗%WHITE%██████%BRIGHT_RED%╗ %WHITE%██%BRIGHT_RED%╗%WHITE%██████%BRIGHT_RED%╗ %WHITE%████████%BRIGHT_RED%╗    %WHITE%██████%BRIGHT_BLUE%╗ %WHITE%██%BRIGHT_BLUE%╗   %WHITE%██%BRIGHT_BLUE%╗         %WHITE%██%BRIGHT_CYAN%╗%WHITE%██%BRIGHT_CYAN%╗%WHITE%███████%BRIGHT_CYAN%╗%WHITE%██%BRIGHT_CYAN%╗     %WHITE%██%BRIGHT_CYAN%╗     
-echo  %WHITE%██%BRIGHT_RED%╔════╝%WHITE%██%BRIGHT_RED%╔════╝%WHITE%██%BRIGHT_RED%╔══%WHITE%██%BRIGHT_RED%╗%WHITE%██%BRIGHT_RED%║%WHITE%██%BRIGHT_RED%╔══%WHITE%██%BRIGHT_RED%╗╚══%WHITE%██%BRIGHT_RED%╔══╝    %WHITE%██%BRIGHT_BLUE%╔══%WHITE%██%BRIGHT_BLUE%╗╚%WHITE%██%BRIGHT_BLUE%╗ %WHITE%██%BRIGHT_BLUE%╔╝         %WHITE%██%BRIGHT_CYAN%║%WHITE%██%BRIGHT_CYAN%║%WHITE%██%BRIGHT_CYAN%╔════╝%WHITE%██%BRIGHT_CYAN%║     %WHITE%██%BRIGHT_CYAN%║     
-echo  %WHITE%███████%BRIGHT_RED%╗%WHITE%██%BRIGHT_RED%║     %WHITE%██████%BRIGHT_RED%╔╝%WHITE%██%BRIGHT_RED%║%WHITE%██████%BRIGHT_RED%╔╝   %WHITE%██%BRIGHT_RED%║       %WHITE%██████%BRIGHT_BLUE%╔╝ ╚%WHITE%████%BRIGHT_BLUE%╔╝          %WHITE%██%BRIGHT_CYAN%║%WHITE%██%BRIGHT_CYAN%║%WHITE%███████%BRIGHT_CYAN%╗%WHITE%██%BRIGHT_CYAN%║     %WHITE%██%BRIGHT_CYAN%║     
-echo  %BRIGHT_RED%╚════%WHITE%██%BRIGHT_RED%║%WHITE%██%BRIGHT_RED%║     %WHITE%██%BRIGHT_RED%╔══%WHITE%██%BRIGHT_RED%╗%WHITE%██%BRIGHT_RED%║%WHITE%██%BRIGHT_RED%╔═══╝    %WHITE%██%BRIGHT_RED%║       %WHITE%██%BRIGHT_BLUE%╔══%WHITE%██%BRIGHT_BLUE%╗  ╚%WHITE%██%BRIGHT_BLUE%╔╝      %WHITE%██   %WHITE%██%BRIGHT_CYAN%║%WHITE%██%BRIGHT_CYAN%║%BRIGHT_CYAN%╚════%WHITE%██%BRIGHT_CYAN%║%WHITE%██%BRIGHT_CYAN%║     %WHITE%██%BRIGHT_CYAN%║     
-echo  %WHITE%███████%BRIGHT_RED%║%BRIGHT_RED%╚%WHITE%██████%BRIGHT_RED%╗%WHITE%██%BRIGHT_RED%║  %WHITE%██%BRIGHT_RED%║%WHITE%██%BRIGHT_RED%║%WHITE%██%BRIGHT_RED%║        %WHITE%██%BRIGHT_RED%║       %WHITE%██████%BRIGHT_BLUE%╔╝   %WHITE%██%BRIGHT_BLUE%║       %BRIGHT_CYAN%╚%WHITE%█████%BRIGHT_CYAN%╔╝%WHITE%██%BRIGHT_CYAN%║%WHITE%███████%BRIGHT_CYAN%║%WHITE%███████%BRIGHT_CYAN%╗%WHITE%███████%BRIGHT_CYAN%╗
-echo  %BRIGHT_RED%╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝        ╚═╝       %BRIGHT_BLUE%╚═════╝    ╚═╝        %BRIGHT_CYAN%╚════╝ ╚═╝╚══════╝╚══════╝╚══════╝                                                                                                                                                                                                                                                                                                             
-echo ══════════════════════════════════════════════════════════════
-echo.                                              %BRIGHT_BLACK%Twitter @Jisllos%WHITE%
-echo  %BRIGHT_BLUE%1%BRIGHT_WHITE%: Run Perfect Windows
-echo  %BRIGHT_BLUE%2%BRIGHT_WHITE%: Information
-echo  %BRIGHT_RED%E%BRIGHT_WHITE%: Exit
-echo.
-set "choice="
-set /p choice=%DARK_WHITE%Choose an option to continue: !BRIGHT_BLUE!
-if not defined choice goto :Main-Menu
-if "%choice%"=="1" goto Menu_1
-if "%choice%"=="2" goto Menu_2
-if /I "%choice%"=="E" goto Menu_E
-echo %BRIGHT_BLACK%Invalid choice, please try again.%DARK_WHITE%
-pause
-goto :Main-Menu
+for /F "delims=" %%A in ('echo prompt $E^| cmd') do set "ESC=%%A"
+set "N=%ESC%[0m"
+set "W=%ESC%[97m"
+set "K=%ESC%[90m"
+set "R=%ESC%[91m"
+set "G=%ESC%[92m"
+set "Y=%ESC%[93m"
+set "B=%ESC%[94m"
+set "M=%ESC%[95m"
+set "C=%ESC%[96m"
 
-REM Option 1: Perfect Windows
-:Menu_1
-REM Services
-set services_auto=AudioEndpointBuilder Audiosrv BITS BFE BluetoothUserService_dc2a4 BrokerInfrastructure Browser BthAvctpSvc BthHFSrv CaptureService_dc2a4 CDPUserSvc_dc2a4 COMSysApp CoreMessagingRegistrar CredentialEnrollmentManagerUserSvc_dc2a4 CryptSvc DPS Dhcp Dnscache DoSvc DsmSvc DusmSvc EapHost EventLog EventSystem FrameServer GraphicsPerfSvc HvHost IKEEXT LanmanServer LanmanWorkstation LicenseManager MMCSS MpsSvc NaturalAuthentication NgcCtnrSvc NgcSvc NlaSvc OneSyncSvc_dc2a4 ProfSvc Power PrintWorkflowUserSvc_dc2a4 RasAuto RasMan RemoteRegistry RpcEptMapper RpcLocator RpcSs SamSs Schedule SecurityHealthService SENS ShellHWDetection Spooler SSDPSRV SysMain TabletInputService Themes UsoSvc VGAuthService VMTools VSS WebClient WdiServiceHost WinDefend WlanSvc WpnUserService_dc2a4 XblAuthManager XboxNetApiSvc bthserv gpsvc iphlpsvc mpssvc nsi p2psvc perceptionsimulation sppsvc svsvc tzautoupdate vds webthreatdefusersvc_dc2a4 wscsvc
-set services_disabled=AJRouter AppVClient DiagTrack DialogBlockingService DistributedLinkTrackingService EdgeUpdate edgeupdatem embeddedmode hidserv shpamsvc spectrum ssh-agent uhssvc wercplsupport webthreatdefsvc wuauserv
-set services_autodelay=BITS DoSvc WSearch wscsvc
-
-echo !BRIGHT_WHITE!Adjusting Service Settings...
-echo !BRIGHT_WHITE!Setting All Services to Manual: 
-for /f "tokens=1,2" %%a in ('sc query state^= all ^| find "SERVICE_NAME:"') do (
-    echo !DARK_YELLOW!Configuring %%b to start manually...
-    sc config "%%b" start= demand
-    echo Successfully set %%b to Manual
+net session >nul 2>&1 || (
+    echo %R%Run as Administrator.%N%
+    pause
+    exit /b
 )
 
-echo !BRIGHT_WHITE!Setting Important Services to Automatic: 
+set "ROOT=%~dp0"
+set "OUT=%ROOT%_perfectwindows"
+set "LOG=%OUT%\logs"
+set "BACKUP=%OUT%\backups"
+set "TS="
+
+for /f "tokens=2 delims==." %%a in ('wmic os get localdatetime /value ^| find "="') do set "TS=%%a"
+if not exist "%OUT%" md "%OUT%"
+if not exist "%LOG%" md "%LOG%"
+if not exist "%BACKUP%" md "%BACKUP%"
+
+set "BUILD="
+set "VERSTR="
+for /f "tokens=2*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentBuild 2^>nul ^| find "CurrentBuild"') do set "BUILD=%%B"
+for /f "tokens=2*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v DisplayVersion 2^>nul ^| find "DisplayVersion"') do set "VERSTR=%%B"
+if not defined VERSTR set "VERSTR=(unknown)"
+set "OSLINE=Build %BUILD% %VERSTR%"
+
+set PRIVACY=1
+set SERVICES=1
+set GAMING=1
+set UI=1
+set NETWORK=1
+set POWER=0
+set CLEANUP=0
+set SECURITY=0
+set BOOT_LEGACY=0
+set LOGIN_SAFEGUARD=1
+
+:banner
+cls
+echo.
+echo   %W%██████╗ ██╗   ██╗  ██╗   ██╗ █████╗  █████╗ ██╗     █████╗ ██╗   ██║%N%
+echo   %W%██╔══██╗╚██╗ ██╔╝  ██║   ██║██╔══██╗██╔══██╗██║     ██╔══██╗██║   ██║%N%
+echo   %W%██████╦╝ ╚████╔╝   ╚██╗ ██╔╝███████║██║  ╚═╝██║     ███████║╚██╗ ██╔╝%N%
+echo   %W%██╔══██╗  ╚██╔╝     ╚████╔╝ ██╔══██║██║  ██╗██║     ██╔══██║ ╚████╔╝ %N%
+echo   %W%██████╦╝   ██║       ╚██╔╝  ██║  ██║╚█████╔╝███████╗██║  ██║  ╚██╔╝  %N%
+echo   %W%╚═════╝    ╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚════╝ ╚══════╝╚═╝  ╚═╝   ╚═╝   %N%
+echo   %K%--------------------------------------------------------------------------------------------------------------%N%
+echo   %C%Detected:%N% %W%%OSLINE%%N%     %K%Backups:%N% %W%%BACKUP%%N%
+echo.
+
+set /a count=1
+call :showToggle PRIVACY         !count! "Privacy / Telemetry hardening"
+set /a count+=1
+call :showToggle SERVICES        !count! "Service tuning (SAFE profile; keeps HID/Biometrics)"
+set /a count+=1
+call :showToggle GAMING          !count! "Gaming tweaks (GameDVR off, scheduler, multimedia)"
+set /a count+=1
+call :showToggle UI              !count! "UI/Taskbar suggestions & ads off"
+set /a count+=1
+call :showToggle NETWORK         !count! "Network tweaks (Wi-Fi Sense off, feeds off)"
+set /a count+=1
+call :showToggle POWER           !count! "Power: disable hibernate (saves disk, affects Fast Startup)"
+set /a count+=1
+call :showToggle CLEANUP         !count! "Cleanup (safe temp/thumbcache only, no Prefetch/log nukes)"
+set /a count+=1
+call :showToggle SECURITY        !count! "Disable system mitigations (NOT recommended)"
+set /a count+=1
+call :showToggle BOOT_LEGACY     !count! "Legacy F8 boot menu [advanced]"
+set /a count+=1
+call :showToggle LOGIN_SAFEGUARD !count! "Login Safeguard (prevents PIN/biometric breakage)"
+echo.
+echo   %B%[A]%N% Apply    %Y%[P]%N% Preview    %C%[R]%N% Restore    %R%[E]%N% Exit
+echo.
+set /p "choice=Enter option (1-10, A, P, R, E): "
+
+if "!choice!"=="1" goto toggle1
+if "!choice!"=="2" goto toggle2
+if "!choice!"=="3" goto toggle3
+if "!choice!"=="4" goto toggle4
+if "!choice!"=="5" goto toggle5
+if "!choice!"=="6" goto toggle6
+if "!choice!"=="7" goto toggle7
+if "!choice!"=="8" goto toggle8
+if "!choice!"=="9" goto toggle9
+if "!choice!"=="10" goto toggle10
+if /i "!choice!"=="A" goto apply
+if /i "!choice!"=="P" goto preview
+if /i "!choice!"=="R" goto restore
+if /i "!choice!"=="E" exit /b
+goto banner
+
+:toggle1
+if "!PRIVACY!"=="1" (set "PRIVACY=0") else (set "PRIVACY=1")
+goto banner
+
+:toggle2
+if "!SERVICES!"=="1" (set "SERVICES=0") else (set "SERVICES=1")
+goto banner
+
+:toggle3
+if "!GAMING!"=="1" (set "GAMING=0") else (set "GAMING=1")
+goto banner
+
+:toggle4
+if "!UI!"=="1" (set "UI=0") else (set "UI=1")
+goto banner
+
+:toggle5
+if "!NETWORK!"=="1" (set "NETWORK=0") else (set "NETWORK=1")
+goto banner
+
+:toggle6
+if "!POWER!"=="1" (set "POWER=0") else (set "POWER=1")
+goto banner
+
+:toggle7
+if "!CLEANUP!"=="1" (set "CLEANUP=0") else (set "CLEANUP=1")
+goto banner
+
+:toggle8
+if "!SECURITY!"=="1" (set "SECURITY=0") else (set "SECURITY=1")
+goto banner
+
+:toggle9
+if "!BOOT_LEGACY!"=="1" (set "BOOT_LEGACY=0") else (set "BOOT_LEGACY=1")
+goto banner
+
+:toggle10
+if "!LOGIN_SAFEGUARD!"=="1" (set "LOGIN_SAFEGUARD=0") else (set "LOGIN_SAFEGUARD=1")
+goto banner
+
+:showToggle
+set "val=!%~1!"
+set "num=%~2"
+set "label=%~3"
+if "!val!"=="1" (echo   !num!. %G%ON %N% — %W%!label!%N%) else (echo   !num!. %R%OFF%N% — %K%!label!%N%)
+exit /b
+
+:preview
+cls
+echo %C%=== DRY RUN / WHAT WILL CHANGE ===%N%
+if "%PRIVACY%"=="1" (
+    echo %C%[Privacy]%N%
+    echo   Disable telemetry and advertising IDs
+    if "%LOGIN_SAFEGUARD%"=="0" echo   Disable biometrics and location services
+)
+if "%SERVICES%"=="1" (
+    echo %C%[Services]%N%
+    echo   Tune various services to specified start types (e.g., DiagTrack disabled, etc.)
+    echo   Handles wildcard services like CDPUserSvc_*
+)
+if "%GAMING%"=="1" (
+    echo %C%[Gaming]%N%
+    echo   Disable GameDVR
+    echo   Optimize multimedia scheduling for games
+)
+if "%UI%"=="1" (
+    echo %C%[UI]%N%
+    echo   Disable taskbar suggestions and ads
+)
+if "%NETWORK%"=="1" (
+    echo %C%[Network]%N%
+    echo   Disable Wi-Fi Sense and hotspot reporting
+)
+if "%POWER%"=="1" (
+    echo %C%[Power]%N%
+    echo   Disable hibernation
+)
+if "%CLEANUP%"=="1" (
+    echo %C%[Cleanup]%N%
+    echo   Clean temp files and thumbnails
+)
+if "%BOOT_LEGACY%"=="1" (
+    echo %C%[Boot]%N%
+    echo   Enable legacy F8 boot menu
+)
+if "%SECURITY%"=="1" (
+    echo %C%[Security]%N%
+    echo   WARNING: Disable system security mitigations
+)
+echo.
+pause
+goto banner
+
+:apply
+cls
+echo %B%Creating restore point and backups...%N%
+powershell -NoProfile -Command "try{Checkpoint-Computer -Description 'PerfectWindows_%TS%' -RestorePointType 'MODIFY_SETTINGS' | Out-Null; Write-Output 'OK'}catch{Write-Output 'SR_failed'}" | findstr /i "OK" >nul || echo %Y%(Restore point could not be created — continue anyway.)%N%
+
+reg export "HKLM\SOFTWARE\Policies" "%BACKUP%\policies_%TS%.reg" /y >nul 2>&1
+reg export "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "%BACKUP%\cdm_%TS%.reg" /y >nul 2>&1
+reg export "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" "%BACKUP%\mmsp_%TS%.reg" /y >nul 2>&1
+reg export "HKLM\SYSTEM\CurrentControlSet\Control" "%BACKUP%\control_%TS%.reg" /y >nul 2>&1
+sc query type= service state= all > "%BACKUP%\services_%TS%.txt" 2>&1
+schtasks /query /v /fo LIST > "%BACKUP%\tasks_%TS%.txt" 2>&1
+
+echo %G%Backups done.%N%
+echo.
+echo %B%Applying selected tweaks...%N%
+
+if "%PRIVACY%"=="1" call :do_privacy
+if "%SERVICES%"=="1" call :do_services
+if "%GAMING%"=="1" call :do_gaming
+if "%UI%"=="1" call :do_ui
+if "%NETWORK%"=="1" call :do_network
+if "%POWER%"=="1" call :do_power
+if "%CLEANUP%"=="1" call :do_cleanup
+if "%BOOT_LEGACY%"=="1" call :do_boot_legacy
+if "%SECURITY%"=="1" call :do_security
+
+echo.
+echo %G%All selected tweaks applied. A reboot is recommended.%N%
+pause
+goto banner
+
+:restore
+cls
+echo %Y%=== RESTORE OPTIONS ===%N%
+echo   %B%[1]%N% Re-enable critical input/login services (HID, Biometrics, NaturalAuth)
+echo   %B%[2]%N% Restore Windows Hello/Biometrics policies
+echo   %B%[3]%N% Re-enable GameDVR
+echo   %B%[4]%N% Re-enable Windows Update service
+echo   %B%[5]%N% Load full registry snapshot (manual .reg import from %BACKUP%)
+echo   %R%[E]%N% Back
+choice /c 123456E /n /m "Pick: "
+if errorlevel 6 goto banner
+if errorlevel 5 goto restore_reg
+if errorlevel 4 goto restore_wu
+if errorlevel 3 goto restore_gamedvr
+if errorlevel 2 goto restore_bio
+if errorlevel 1 goto restore_input
+goto banner
+
+:setService
+if "%~1"=="" exit /b
+set "service_pattern=%~1"
+set "start_type=%~2"
+echo "%service_pattern%" | findstr /c:"*" >nul
+if errorlevel 1 (
+    call :setSingleService "%service_pattern%" "%start_type%"
+) else (
+    echo   %Y%Processing wildcard services matching: %service_pattern%%N%
+    set "prefix=!service_pattern:~0,-2!"
+    set prefix_len=0
+    for /L %%i in (0,1,256) do if not "!prefix:~%%i,1!"=="" set /a prefix_len=%%i+1
+    set "found=0"
+    for /f "delims=" %%s in ('wmic service get name ^| find /v "Name"') do (
+        set "svc=%%s"
+        if /i "!svc:~0,%prefix_len%!"=="!prefix!" (
+            set /a found+=1
+            call :setSingleService "!svc!" "%start_type%"
+        )
+    )
+    if "!found!"=="0" echo   %K%- No services found matching "%service_pattern%"%N%
+)
+exit /b
+
+:setSingleService
+set "service_name=%~1"
+set "target_type=%~2"
+sc qc "%service_name%" >nul 2>&1
+if errorlevel 1 (
+    echo   %K%- Skip "%service_name%" (does not exist)%N%
+    exit /b
+)
+set "current_start="
+for /f "skip=1 delims=" %%m in ('wmic service where name^="%service_name%" get StartMode ^| findstr /r /v "^$"') do if not defined current_start set "current_start=%%m"
+if not defined current_start (
+    echo   %R%x Failed to get current start type for "%service_name%"%N%
+    exit /b
+)
+set "delayed=0"
+if /i "!current_start!"=="Auto" (
+    reg query "HKLM\SYSTEM\CurrentControlSet\Services\%service_name%" /v DelayedAutoStart 2>nul | find "0x1" >nul && set "delayed=1"
+    if "!delayed!"=="1" set "current_start=delayed-auto"
+) else (
+    set "current_start=!current_start!"
+)
+set "skip=0"
+if /i "%target_type%"=="!current_start!" set "skip=1"
+if "!skip!"=="1" (
+    echo   %K%~ "%service_name%" already %target_type%%N%
+    exit /b
+)
+set "sc_type=%target_type%"
+if /i "%target_type%"=="delayed-auto" set "sc_type=auto"
+if /i "%target_type%"=="manual" set "sc_type=demand"
+sc config "%service_name%" start= !sc_type! >nul 2>&1
+if errorlevel 1 (
+    echo   %R%x Failed to set "%service_name%" start type to !sc_type!%N%
+    exit /b
+)
+if /i "%target_type%"=="delayed-auto" (
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\%service_name%" /v DelayedAutoStart /t REG_DWORD /d 1 /f >nul 2>&1
+    if errorlevel 1 (
+        echo   %R%x Failed to set DelayedAutoStart for "%service_name%"%N%
+        exit /b
+    )
+) else if /i "%target_type%"=="auto" (
+    reg delete "HKLM\SYSTEM\CurrentControlSet\Services\%service_name%" /v DelayedAutoStart /f >nul 2>&1
+)
+echo   %G%* Set "%service_name%" to %target_type% (was !current_start!)%N%
+exit /b
+
+:addReg
+reg add "%~1" /v "%~2" /t %~3 /d %~4 /f >nul 2>&1 && echo   %G%+ %~1\%~2 = %~4%N% || echo   %R%x %~1\%~2 (failed)%N%
+exit /b
+
+:do_privacy
+echo %C%[Privacy]%N%
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "DoNotShowFeedbackNotifications" REG_DWORD 1
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" REG_DWORD 1
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" REG_DWORD 0
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" REG_DWORD 0
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "PublishUserActivities" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "UploadUserActivities" REG_DWORD 0
+if "%LOGIN_SAFEGUARD%"=="0" (
+    call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" "Enabled" REG_DWORD 0
+    call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" "DisableLocation" REG_DWORD 1
+) else (
+    echo   %Y%- Skipped biometrics/location due to LoginSafeguard%N%
+)
+exit /b
+
+:do_services
+echo %C%[Services]%N%
+
+set services_auto=AudioEndpointBuilder Audiosrv BFE BrokerInfrastructure BthAvctpSvc CoreMessagingRegistrar CryptSvc DPS Dhcp Dnscache EventLog EventSystem LanmanServer LanmanWorkstation NaturalAuthentication NgcCtnrSvc NgcSvc NlaSvc ProfSvc Power RpcEptMapper RpcSs SamSs Schedule ShellHWDetection Spooler SysMain Themes UserManager VGAuthService VMTools WinDefend Winmgmt WlanSvc gpsvc iphlpsvc mpssvc nsi
+set services_manual=ALG AppIDSvc AppMgmt AppReadiness AppXSvc Appinfo AxInstSV BDESVC BTAGService Browser CDPSvc COMSysApp CertPropSvc ClipSVC CscService DcomLaunch DcpSvc DevQueryBroker DeviceAssociationService DeviceInstall DispBrokerDesktopSvc DisplayEnhancementService DmEnrollmentSvc EFS EapHost EntAppSvc FDResPub Fax FontCache FrameServer FrameServerMonitor GraphicsPerfSvc HomeGroupListener HomeGroupProvider HvHost IEEtwCollectorService IKEEXT InstallService InventorySvc IpxlatCfgSvc KeyIso KtmRm LicenseManager LxpSvc MSDTC MSiSCSI McpManagementService MicrosoftEdgeElevationService MixedRealityOpenXRSvc MsKeyboardFilter NcaSvc NcbService NcdAutoSetup NetSetupSvc Netman Netprofm Netlogon OneSyncSvc_ PNRPAutoReg PNRPsvc PcaSvc PeerDistSvc PerfHost PhoneSvc PlugPlay PolicyAgent PrintNotify PushToInstall QWAVE RasAuto RasMan RetailDemo RmSvc RpcLocator SCPolicySvc SCardSvr SDRSVC SEMgrSvc SNMPTRAP SNMPTrap SSDPSRV ScDeviceEnum SecurityHealthService Sense SensorDataService SensorService SensrSvc SessionEnv SharedAccess SharedRealitySvc SmsRouter SstpSvc StiSvc StorSvc SystemEventsBroker TabletInputService TapiSrv TermService TieringEngineService TimeBroker TimeBrokerSvc TokenBroker TrkWks TroubleshootingSvc TrustedInstaller UI0Detect UmRdpService UsoSvc VSS VacSvc W32Time WEPHOSTSVC WFDSConMgrSvc WMPNetworkSvc WManSvc WPDBusEnum WSService WaaSMedicSvc WalletService WarpJITSvc WbioSrvc Wcmsvc WcsPlugInService WdNisSvc WdiServiceHost WdiSystemHost WebClient Wecsvc WerSvc WiaRpc WinHttpAutoProxySvc WinRM WpcMonSvc WpnService Wudfsvc autotimesvc bthserv camsvc cloudidsvc dcsvc defragsvc diagnosticshub.standardcollector.service diagsvc dmwappushservice dot3svc edgeupdate edgeupdatem fdPHost fhsvc hidserv icssvc lfsvc lltdsvc lmhosts msiserver p2pimsvc p2psvc perceptionsimulation pla seclogon smphost svsvc swprv tiledatamodelsvc upnphost vds vm3dservice vmicguestinterface vmicheartbeat vmickvpexchange vmicrdv vmicshutdown vmictimesync vmicvmsession vmicvss vmvss wbengine wcncsvc wisvc wlidsvc wlpasvc wmiApSrv workfolderssvc
+set services_disabled=AJRouter AppVClient DiagTrack DialogBlockingService NetTcpPortSharing RemoteAccess RemoteRegistry UevAgentService shpamsvc spectrum ssh-agent tzautoupdate uhssvc
+set services_delayed_auto=BITS MapsBroker sppsvc WSearch wscsvc
+
+echo %W%Adjusting Service Settings...%N%
+
+echo %W%Setting Manual Services:%N%
+for %%s in (%services_manual%) do (
+    echo %Y%Configuring %%s to start manually...%N%
+    sc config "%%s" start= demand >nul 2>&1
+    echo Successfully set %%s to Manual
+)
+
+echo %W%Setting Automatic Services:%N%
 for %%s in (%services_auto%) do (
-    echo !DARK_BLUE!Configuring %%s to start automatically...
-    sc config "%%s" start= auto
+    echo %B%Configuring %%s to start automatically...%N%
+    sc config "%%s" start= auto >nul 2>&1
     echo Successfully set %%s to Automatic
 )
 
-echo !BRIGHT_WHITE!Setting AutomaticDelayedStart Services: 
-for %%s in (%services_autodelay%) do (
-    echo !DARK_GREEN!Configuring %%s to start automatically with delay...
-    sc config "%%s" start= delayed-auto
-    echo Successfully set %%s to AutomaticDelayedStart
+echo %W%Setting Delayed Auto Services:%N%
+for %%s in (%services_delayed_auto%) do (
+    echo %G%Configuring %%s to start automatically with delay...%N%
+    sc config "%%s" start= delayed-auto >nul 2>&1
+    echo Successfully set %%s to Delayed Auto
 )
 
-echo !BRIGHT_WHITE!Setting Disabled Services: 
+echo %W%Setting Disabled Services:%N%
 for %%s in (%services_disabled%) do (
-    echo !DARK_RED!Disabling %%s...
-    sc config "%%s" start= disabled
+    echo %R%Disabling %%s...%N%
+    sc config "%%s" start= disabled >nul 2>&1
     echo Successfully set %%s to Disabled
 )
-echo !BRIGHT_WHITE!All service settings have been successfully adjusted.
 
-REM Disable Scheduled Tasks
-echo !BRIGHT_WHITE!Disable Scheduled Tasks
-schtasks /change /tn "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\ProgramDataUpdater" /disable
-schtasks /change /tn "Microsoft\Windows\Autochk\Proxy" /disable
-schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /disable
-schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /disable
-schtasks /change /tn "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /disable
-schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClient" /disable
-schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" /disable
-schtasks /change /tn "Microsoft\Windows\Windows Error Reporting\QueueReporting" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\MareBackup" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\StartupAppTask" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\PcaPatchDbTask" /disable
-schtasks /change /tn "Microsoft\Windows\Maps\MapsUpdateTask" /disable
-
-REM Disable Telemetry via Registry
-echo !BRIGHT_WHITE!Disable Telemetry via Registry
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v AllowTelemetry /t REG_DWORD /d "0" /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v ContentDeliveryAllowed /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v OemPreInstalledAppsEnabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v PreInstalledAppsEnabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v PreInstalledAppsEverEnabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SilentInstalledAppsEnabled /t REG_DWORD /d "0" /f
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-338387Enabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-338388Enabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-338389Enabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-353698Enabled /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d "0" /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d "1" /f
-reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d "0" /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v DoNotShowFeedbackNotifications /t REG_DWORD /d "1" /f
-reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableTailoredExperiencesWithDiagnosticData /t REG_DWORD /d "1" /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v DisabledByGroupPolicy /t REG_DWORD /d "1" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v Disabled /t REG_DWORD /d "1" /f
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v fAllowToGetHelp /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" /v EnthusiastMode /t REG_DWORD /d "1" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowTaskViewButton /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" /v PeopleBand /t REG_DWORD /d "0" /f
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v LaunchTo /t REG_DWORD /d "1" /f
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" /v LongPathsEnabled /t REG_DWORD /d "1" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v SearchOrderConfig /t REG_DWORD /d "1" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v SystemResponsiveness /t REG_DWORD /d "0" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v NetworkThrottlingIndex /t REG_DWORD /d "4294967295" /f
-reg add "HKCU\Control Panel\Desktop" /v MenuShowDelay /t REG_DWORD /d "1" /f
-reg add "HKCU\Control Panel\Desktop" /v AutoEndTasks /t REG_DWORD /d "1" /f
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v ClearPageFileAtShutdown /t REG_DWORD /d "0" /f
-reg add "HKLM\SYSTEM\ControlSet001\Services\Ndu" /v Start /t REG_DWORD /d "2" /f
-reg add "HKCU\Control Panel\Mouse" /v MouseHoverTime /t REG_SZ /d "400" /f
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v IRPStackSize /t REG_DWORD /d "30" /f
-reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v EnableFeeds /t REG_DWORD /d "0" /f
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsTaskbarViewMode /t REG_DWORD /d "2" /f
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v HideSCAMeetNow /t REG_DWORD /d "1" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "GPU Priority" /t REG_DWORD /d "8" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v Priority /t REG_DWORD /d "6" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" /v "Scheduling Category" /t REG_SZ /d "High" /f
-
-REM Change boot menu policy to Legacy
-echo !BRIGHT_WHITE!Changing boot menu policy to Legacy mode...
-bcdedit /set {current} bootmenupolicy Legacy
-echo !BRIGHT_WHITE!Boot menu policy has been successfully changed to Legacy mode.
-
-REM Check Windows version before executing additional commands
-echo !BRIGHT_WHITE!Check Windows version before executing additional commands...
-ver | find "Version 10.0." > nul
-if errorlevel 1 goto continue
-
-REM Modify Task Manager settings for Windows versions older than 22557
-echo !BRIGHT_WHITE!Modify Task Manager settings for Windows versions older than 22557...
-for /f "tokens=4-5 delims=[]. " %%i in ('ver') do set "winver=%%i.%%j"
-if "%winver%" lss "22557" (
-    start "" /min taskmgr.exe
-    :loop
-    ping -n 1 127.0.0.1 > nul
-    reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\TaskManager" /v Preferences > nul 2>&1
-    if %errorlevel% equ 0 (
-        taskkill /f /im taskmgr.exe
-        reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\TaskManager" /v Preferences /t REG_BINARY /d 0 /f
-    ) else (
-        goto loop
+echo %W%Setting Wildcard Services...%N%
+for %%p in (BcastDVRUserService BluetoothUserService CaptureService CDPUserSvc ConsentUxUserSvc CredentialEnrollmentManagerUserSvc DeviceAssociationBrokerSvc DevicePickerUserSvc DevicesFlowUserSvc MessagingService NPSMSvc P9RdrService PenService PimIndexMaintenanceSvc PrintWorkflowUserSvc UdkUserSvc UnistoreSvc UserDataSvc cbdhsvc webthreatdefusersvc WpnUserService) do (
+    for /f "tokens=2" %%i in ('sc query type^= service state^= all ^| find "SERVICE_NAME:" ^| find "%%p_"') do (
+        if "%%p"=="CDPUserSvc" (
+            sc config "%%i" start= auto >nul 2>&1
+            echo Configured %%i to auto
+        ) else if "%%p"=="webthreatdefusersvc" (
+            sc config "%%i" start= auto >nul 2>&1
+            echo Configured %%i to auto
+        ) else if "%%p"=="WpnUserService" (
+            sc config "%%i" start= auto >nul 2>&1
+            echo Configured %%i to auto
+        ) else (
+            sc config "%%i" start= manual >nul 2>&1
+            echo Configured %%i to manual
+        )
     )
 )
 
-REM Group svchost.exe processes
-echo !BRIGHT_WHITE!Group svchost.exe processes...
-for /f "skip=1 tokens=1" %%a in ('wmic computersystem get totalphysicalmemory') do set "ram=%%a"
-reg add "HKLM\SYSTEM\CurrentControlSet\Control" /v SvcHostSplitThresholdInKB /t REG_DWORD /d %ram% /f
-
-REM Delete AutoLogger-Diagtrack-Listener.etl and deny permissions
-echo !BRIGHT_WHITE!Delete AutoLogger-Diagtrack-Listener.etl and deny permissions...
-set "autoLoggerDir=%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger"
-if exist "%autoLoggerDir%\AutoLogger-Diagtrack-Listener.etl" (
-    del "%autoLoggerDir%\AutoLogger-Diagtrack-Listener.etl"
-)
-icacls "%autoLoggerDir%" /deny SYSTEM:(OI)(CI)F
-:continue
-
-REM Disable Wi-Fi Sense
-echo !BRIGHT_WHITE!Disable Wi-Fi Sense
-reg add "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v Value /t REG_DWORD /d 0 /f
-reg add "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v Value /t REG_DWORD /d 0 /f
-
-REM Disable Activity Feed
-echo !BRIGHT_WHITE!Disable Activity Feed
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v EnableActivityFeed /t REG_DWORD /d 0 /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v PublishUserActivities /t REG_DWORD /d 0 /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v UploadUserActivities /t REG_DWORD /d 0 /f
-
-REM Delete Temporary Files
-echo !BRIGHT_WHITE!Delete Temporary Files
-rd /s /q C:\Windows\Temp
-rd /s /q %TEMP%
-rd /s /q C:\Windows\Prefetch
-del /q /s /f "%LocalAppData%\Microsoft\Windows\INetCache\*.*" > nul
-rd /s /q %LocalAppData%\Microsoft\Windows\INetCache
-rd /s /q %SystemDrive%\$Recycle.Bin
-net stop wuauserv
-rd /s /q C:\Windows\SoftwareDistribution
-net start wuauserv
-for /F "tokens=*" %%G in ('wevtutil el') do (wevtutil cl "%%G")
-rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportQueue
-rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportArchive
-rd /s /q C:\Windows.old
-rd /s /q "%LocalAppData%\DirectX Shader Cache"
-del /f /s /q /a "%LocalAppData%\Microsoft\Windows\Explorer\thumbcache_*.db"
-
-REM Deny location access
-echo !BRIGHT_WHITE!Deny location access
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v Value /t REG_SZ /d "Deny" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v SensorPermissionState /t REG_DWORD /d 0 /f
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v Status /t REG_DWORD /d 0 /f
-reg add "HKLM\SYSTEM\Maps" /v AutoUpdateEnabled /t REG_DWORD /d 0 /f
-
-REM Stop HomeGroup Services
-echo !BRIGHT_WHITE!Stop HomeGroup Services
-net stop "HomeGroupListener"
-net stop "HomeGroupProvider"
-sc config HomeGroupListener start= demand
-sc config HomeGroupProvider start= demand
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\HomeGroup" /v DisableHomeGroup /t REG_DWORD /d 1 /f
-
-REM Disable Storage Sense
-echo !BRIGHT_WHITE!Disable Storage Sense
-reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" /f
-
-REM Disable Hibernate
-echo !BRIGHT_WHITE!Disable Hibernate
-reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HibernateEnabled /t REG_DWORD /d 0 /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" /v ShowHibernateOption /t REG_DWORD /d 0 /f
-powercfg.exe /hibernate off
-
-REM Disable GameDVR
-echo !BRIGHT_WHITE!Disable GameDVR
-reg add "HKCU\System\GameConfigStore" /v GameDVR_FSEBehavior /t REG_DWORD /d 2 /f
-reg add "HKCU\System\GameConfigStore" /v GameDVR_Enabled /t REG_DWORD /d 0 /f
-reg add "HKCU\System\GameConfigStore" /v GameDVR_DXGIHonorFSEWindowsCompatible /t REG_DWORD /d 1 /f
-reg add "HKCU\System\GameConfigStore" /v GameDVR_HonorUserFSEBehaviorMode /t REG_DWORD /d 1 /f
-reg add "HKCU\System\GameConfigStore" /v GameDVR_EFSEFeatureFlags /t REG_DWORD /d 0 /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v AllowGameDVR /t REG_DWORD /d 0 /f
-
-REM Disable Telemetry
-echo !BRIGHT_WHITE!Disable Telemetry...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
-
-REM Disable Compatibility Telemetry
-echo !BRIGHT_WHITE!Disable Compatibility Telemetry...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
-
-REM Disable Advertising ID
-echo !BRIGHT_WHITE!Disable Advertising ID...
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v Enabled /t REG_DWORD /d 0 /f
-
-REM Disable Wi-Fi Sense
-echo !BRIGHT_WHITE!Disable Wi-Fi Sense...
-reg add "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v Value /t REG_DWORD /d 0 /f
-reg add "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v Value /t REG_DWORD /d 0 /f
-
-REM Disable Diagnostic Data
-echo !BRIGHT_WHITE!Disable Diagnostic Data...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v MaxTelemetryAllowed /t REG_DWORD /d 0 /f
-
-REM Disable Handwriting Data Sharing
-echo !BRIGHT_WHITE!Disable Handwriting Data Sharing...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" /v PreventHandwritingErrorReports /t REG_DWORD /d 1 /f
-
-REM Disable Windows Hello Biometrics
-echo !BRIGHT_WHITE!Disable Windows Hello Biometrics...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v Enabled /t REG_DWORD /d 0 /f
-
-REM Disable Timeline Function
-echo !BRIGHT_WHITE!Disable Timeline Function...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v EnableActivityFeed /t REG_DWORD /d 0 /f
-
-REM Disable Location Tracking
-echo !BRIGHT_WHITE!Disable Location Tracking...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v DisableLocation /t REG_DWORD /d 1 /f
-
-REM Disable Feedback Notifications
-echo !BRIGHT_WHITE!Disable Feedback Notifications...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v DoNotShowFeedbackNotifications /t REG_DWORD /d 1 /f
-
-REM Disable Windows Tips
-echo !BRIGHT_WHITE!Disable Windows Tips...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableSoftLanding /t REG_DWORD /d 1 /f
-
-REM Disable Lock Screen Ads
-echo !BRIGHT_WHITE!Disable Lock Screen Ads...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v NoLockScreenCamera /t REG_DWORD /d 1 /f
-
-REM Disable Automatic Installation of Apps
-echo !BRIGHT_WHITE!Disable Automatic Installation of Apps...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v DisableWindowsConsumerFeatures /t REG_DWORD /d 1 /f
-
-REM Disable Start Menu App Suggestions
-echo !BRIGHT_WHITE!Disable Start Menu App Suggestions...
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f
-
-REM Disable Setting App Ads
-echo !BRIGHT_WHITE!Disable Setting App Ads...
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-338393Enabled /t REG_DWORD /d 0 /f
-
-REM Disable Customer Experience Improvement Program
-echo !BRIGHT_WHITE!Disable Customer Experience Improvement Program...
-reg add "HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows" /v CEIPEnable /t REG_DWORD /d 0 /f
-
-REM Disable Help Experience Program
-echo !BRIGHT_WHITE!Disable Help Experience Program...
-reg add "HKLM\SOFTWARE\Policies\Assist" /v NoImplicitFeedback /t REG_DWORD /d 1 /f
-
-REM Disable Experimental Features
-echo !BRIGHT_WHITE!Disable Experimental Features...
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\FlightSettings" /v UserPreferredRedirectStage /t REG_DWORD /d 0 /f
-
-REM Disable Inventory Collector
-echo !BRIGHT_WHITE!Disable Inventory Collector...
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f
-
-REM Disable Get More Out of Windows
-echo !BRIGHT_WHITE!Disable Get More Out of Windows...
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v SubscribedContent-353698Enabled /t REG_DWORD /d 0 /f
-
-cls
-echo Are you sure you want to disable system mitigations? 
-echo This can improve performance but also increases security risks.
-echo.
-echo !BRIGHT_GREEN!Positive: Improved system performance.
-echo !BRIGHT_RED!Negative: Increased vulnerability to security threats.!BRIGHT_WHITE!
-echo.
-echo Please type !BRIGHT_MAGENTA!YES !BRIGHT_WHITE!to continue or any other key to abort.
-set /p UserInput="Enter your choice: "
-if /I "%UserInput%"=="YES" (
-    echo !BRIGHT_WHITE!Disabling Mitigations...
-    call :DisableMitigations
-    echo !BRIGHT_WHITE!Mitigations have been disabled.
-) else (
-    echo !BRIGHT_RED!Operation aborted.
-)
-pause
-cls
-echo !BRIGHT_WHITE!All tweaks have been successfully applied! For the changes to take effect, please restart your computer.
-echo Press !BRIGHT_MAGENTA!ENTER !BRIGHT_WHITE!to return to the main menu.
-pause >nul
-cls
-goto :Main-Menu
-
-:DisableMitigations
-    powershell -Command "& {ForEach($v in (Get-Command -Name 'Set-ProcessMitigation').Parameters['Disable'].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}}"
-    powershell -Command "& {Remove-Item -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\*' -Recurse -ErrorAction SilentlyContinue}"
-    call :UpdateRegistry
-    goto :eof
-
-:UpdateRegistry
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\FVE" /v "DisableExternalDMAUnderLock" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "HVCIMATRequired" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d "1" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "KernelSEHOPEnabled" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "EnableCfg" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "ProtectionMode" /t REG_DWORD /d "0" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettings" /t REG_DWORD /d "1" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d "3" /f
-    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d "3" /f
-    pause
-    goto :eof
-
-REM Option 2: Information
-:Menu_2
-cls
-echo.
-echo %BRIGHT_BLUE%Welcome to Perfect Windows - Your Ultimate Performance Enhancer!
-echo.
-echo %WHITE%Perfect Windows is a meticulously crafted tool, designed with the sole aim of elevating your Windows experience to new heights.
-echo %WHITE%It does so by fine-tuning various system parameters, optimizing your system's settings to deliver peak performance and robust security.
-echo.
-echo %DARK_RED%Disclaimer: We strive to ensure the highest quality and reliability. However, the use of this tool is at your own discretion.
-echo %DARK_RED%We strongly recommend maintaining a backup of your system for safety.
-echo.
-echo %BRIGHT_BLUE%Stay Connected:
-echo %WHITE%For updates, insights and more, follow us on Twitter: @Jisllos
-echo %WHITE%To contribute or report issues, visit our GitHub page: https://github.com/Jisll/windows11
-echo.
-pause
-goto :Main-Menu
-
-REM Option E: Exit
-:Menu_E
-exit
-
-REM Colors
-:Colors
-set "DARK_BLACK=[30m"
-set "DARK_RED=[31m"
-set "DARK_GREEN=[32m"
-set "DARK_YELLOW=[33m"
-set "DARK_BLUE=[34m"
-set "DARK_MAGENTA=[35m"
-set "DARK_CYAN=[36m"
-set "DARK_WHITE=[37m"
-set "BRIGHT_BLACK=[90m"
-set "BRIGHT_RED=[91m"
-set "BRIGHT_GREEN=[92m"
-set "BRIGHT_YELLOW=[93m"
-set "BRIGHT_BLUE=[94m"
-set "BRIGHT_MAGENTA=[95m"
-set "BRIGHT_CYAN=[96m"
-set "BRIGHT_WHITE=[97m"
-set "WHITE=[97m"
+echo %W%All service settings have been successfully adjusted.%N%
 exit /b
+
+:do_gaming
+echo %C%[Gaming]%N%
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_Enabled" REG_DWORD 0
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_FSEBehavior" REG_DWORD 2
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_DXGIHonorFSEWindowsCompatible" REG_DWORD 1
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowGameDVR" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" "SystemResponsiveness" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" "NetworkThrottlingIndex" REG_DWORD 4294967295
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "GPU Priority" REG_DWORD 8
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "Priority" REG_DWORD 6
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "Scheduling Category" REG_SZ High
+exit /b
+
+:do_ui
+echo %C%[UI]%N%
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "LaunchTo" REG_DWORD 1
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" REG_DWORD 0
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" REG_DWORD 0
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "HideSCAMeetNow" REG_DWORD 1
+exit /b
+
+:do_network
+echo %C%[Network]%N%
+call :addReg "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" "Value" REG_DWORD 0
+call :addReg "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" "Value" REG_DWORD 0
+exit /b
+
+:do_power
+echo %C%[Power]%N%
+call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" "HibernateEnabled" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" "ShowHibernateOption" REG_DWORD 0
+powercfg /hibernate off >nul 2>&1
+exit /b
+
+:do_cleanup
+echo %C%[Cleanup]%N%
+for %%D in ("%TEMP%" "%LocalAppData%\Temp") do (
+    if exist "%%~fD" (
+        echo   %G%clean %%~fD%N%
+        del /f /s /q "%%~fD\*.*" >nul 2>&1
+    )
+)
+if exist "%LocalAppData%\Microsoft\Windows\Explorer" (
+    del /f /s /q "%LocalAppData%\Microsoft\Windows\Explorer\thumbcache_*.db" >nul 2>&1
+)
+if exist "%LocalAppData%\Microsoft\Windows\INetCache" (
+    rd /s /q "%LocalAppData%\Microsoft\Windows\INetCache" >nul 2>&1
+)
+echo   %Y%(Skipped Prefetch/EventLog/WER deletions for safety)%N%
+exit /b
+
+:do_boot_legacy
+echo %C%[Boot]%N%
+bcdedit /set {current} bootmenupolicy Legacy >nul 2>&1 && echo   %G%F8 legacy boot menu enabled%N% || echo   %R%x could not change boot policy%N%
+exit /b
+
+:do_security
+echo %C%[Mitigations]%N%
+echo   %R%Disabling mitigations reduces security. Proceeding...%N%
+powershell -NoProfile -Command "ForEach($v in (Get-Command -Name 'Set-ProcessMitigation').Parameters['Disable'].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}" >nul 2>&1
+exit /b
+
+:restore_input
+echo %C%[Restore: Input/Login]%N%
+call :setService "hidserv" auto
+call :setService "WbioSrvc" demand
+call :setService "NaturalAuthentication" auto
+echo   %G%Done. Reboot recommended.%N%
+pause
+goto restore
+
+:restore_bio
+echo %C%[Restore: Biometrics policies]%N%
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v Enabled /f >nul 2>&1
+echo   %G%Policies cleared. Reboot recommended.%N%
+pause
+goto restore
+
+:restore_gamedvr
+echo %C%[Restore: GameDVR]%N%
+reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /f >nul 2>&1
+reg delete "HKCU\System\GameConfigStore" /v GameDVR_Enabled /f >nul 2>&1
+echo   %G%Restored.%N%
+pause
+goto restore
+
+:restore_wu
+echo %C%[Restore: Windows Update]%N%
+call :setService "wuauserv" demand
+echo   %G%Windows Update restored to Manual.%N%
+pause
+goto restore
+
+:restore_reg
+echo %C%[Restore: Registry snapshots]%N%
+echo To restore, manually import the .reg files from %BACKUP% using regedit.
+echo For example: regedit /s "%BACKUP%\policies_%TS%.reg"
+echo Note: Replace %TS% with the actual timestamp from your backup files.
+echo Reboot after importing to apply changes.
+pause
+goto restore
