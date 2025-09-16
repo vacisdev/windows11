@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 chcp 65001 >nul
-title Perfect Windows - Safe Configurable Tweaks (Fixed v2.1)
+title Perfect Windows - Safe Configurable Tweaks
 reg add HKCU\Console /v VirtualTerminalLevel /t REG_DWORD /d 1 /f >nul 2>&1
 for /F %%A in ('powershell -NoProfile -Command "[char]27"') do set "ESC=%%A"
 set "N=!ESC![0m"
@@ -252,11 +252,11 @@ goto banner
 if "%~1"=="" exit /b
 set "service_pattern=%~1"
 set "target_type=%~2"
+echo Setting Service !service_pattern! to !target_type!
 echo "!service_pattern!" | findstr /c:"*" >nul
 if errorlevel 1 (
     call :setSingleService "!service_pattern!" "!target_type!"
 ) else (
-    echo Processing wildcard services matching: !service_pattern!
     set "prefix=!service_pattern:~0,-1!"
     set "prefix_len=0"
     for /L %%i in (0,1,256) do if not "!prefix:~%%i,1!"=="" set /a prefix_len=%%i+1
@@ -269,7 +269,6 @@ if errorlevel 1 (
             call :setSingleService "!svc!" "!target_type!"
         )
     )
-    if "!found!"=="0" echo - No services found matching "!service_pattern!"
 )
 exit /b
 :setSingleService
@@ -277,7 +276,6 @@ set "service_name=%~1"
 set "target_type=%~2"
 sc qc "!service_name!" >nul 2>&1
 if errorlevel 1 (
-    echo - Skip "!service_name!" (does not exist)
     exit /b
 )
 set "start_hex="
@@ -330,21 +328,34 @@ if errorlevel 1 (
     echo + !AR_KEY!\!AR_VAL! = !AR_DATA!
 )
 exit /b
+:delReg
+set "DR_KEY=%~1"
+set "DR_VAL=%~2"
+reg delete "!DR_KEY!" /v "!DR_VAL!" /f >nul 2>&1
+if errorlevel 1 (
+    echo - !DR_KEY!\!DR_VAL! (not found or failed)
+) else (
+    echo - Removed !DR_KEY!\!DR_VAL!
+)
+exit /b
+:delKey
+set "DK_KEY=%~1"
+reg delete "!DK_KEY!" /f >nul 2>&1
+if errorlevel 1 (
+    echo - !DK_KEY! (failed)
+) else (
+    echo - Removed !DK_KEY!
+)
+exit /b
 :log
 >>"!RUNLOG!" echo [%DATE% %TIME%] %~1
 exit /b
 :do_privacy
 echo [Privacy]
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\CrossDeviceResume\Configuration" "IsResumeAllowed" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" REG_DWORD 1
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" "AllowTelemetry" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "AllowTelemetry" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "DoNotShowFeedbackNotifications" REG_DWORD 1
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" REG_DWORD 1
-call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" "Enabled" REG_DWORD 0
-call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" REG_DWORD 0
-call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "PublishUserActivities" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "UploadUserActivities" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "ContentDeliveryAllowed" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "OemPreInstalledAppsEnabled" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "PreInstalledAppsEnabled" REG_DWORD 0
@@ -354,61 +365,35 @@ call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryMana
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338388Enabled" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338389Enabled" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-353698Enabled" REG_DWORD 0
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Siuf\Rules" "NumberOfSIUFInPeriod" REG_DWORD 0
+call :delReg "HKCU\SOFTWARE\Microsoft\Siuf\Rules" "PeriodInNanoSeconds"
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "DoNotShowFeedbackNotifications" REG_DWORD 1
 call :addReg "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableTailoredExperiencesWithDiagnosticData" REG_DWORD 1
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" "DisabledByGroupPolicy" REG_DWORD 1
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" "Disabled" REG_DWORD 1
 call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" "fAllowToGetHelp" REG_DWORD 0
-call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" "EnthusiastMode" REG_DWORD 1
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" "LongPathsEnabled" REG_DWORD 1
-call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" "SearchOrderConfig" REG_DWORD 1
-call :addReg "HKCU\Control Panel\Desktop" "MenuShowDelay" REG_DWORD 1
-call :addReg "HKCU\Control Panel\Desktop" "AutoEndTasks" REG_DWORD 1
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" "ClearPageFileAtShutdown" REG_DWORD 0
-call :addReg "HKLM\SYSTEM\ControlSet001\Services\Ndu" "Start" REG_DWORD 2
-call :addReg "HKCU\Control Panel\Mouse" "MouseHoverTime" REG_SZ 400
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "IRPStackSize" REG_DWORD 30
-call :addReg "HKCU\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" "EnableFeeds" REG_DWORD 0
-call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" REG_DWORD 2
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" "MaxTelemetryAllowed" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\HandwritingErrorReports" "PreventHandwritingErrorReports" REG_DWORD 1
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "EnableActivityFeed" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableSoftLanding" REG_DWORD 1
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" "NoLockScreenCamera" REG_DWORD 1
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" "DisableWindowsConsumerFeatures" REG_DWORD 1
-call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SystemPaneSuggestionsEnabled" REG_DWORD 0
-call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" "SubscribedContent-338393Enabled" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\SQMClient\Windows" "CEIPEnable" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Assist" "NoImplicitFeedback" REG_DWORD 1
-call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\FlightSettings" "UserPreferredRedirectStage" REG_DWORD 0
-call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\HomeGroup" "DisableHomeGroup" REG_DWORD 1
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "PublishUserActivities" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" "UploadUserActivities" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" "Value" REG_SZ "Deny"
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" "SensorPermissionState" REG_DWORD 0
 call :addReg "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" "Status" REG_DWORD 0
 call :addReg "HKLM\SYSTEM\Maps" "AutoUpdateEnabled" REG_DWORD 0
-echo Disable Scheduled Tasks
-schtasks /change /tn "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\ProgramDataUpdater" /disable
-schtasks /change /tn "Microsoft\Windows\Autochk\Proxy" /disable
-schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /disable
-schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /disable
-schtasks /change /tn "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /disable
-schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClient" /disable
-schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" /disable
-schtasks /change /tn "Microsoft\Windows\Windows Error Reporting\QueueReporting" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\MareBackup" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\StartupAppTask" /disable
-schtasks /change /tn "Microsoft\Windows\Application Experience\PcaPatchDbTask" /disable
-schtasks /change /tn "Microsoft\Windows\Maps\MapsUpdateTask" /disable
-net stop "HomeGroupListener"
-net stop "HomeGroupProvider"
-sc config HomeGroupListener start= demand
-sc config HomeGroupProvider start= demand
-set "autoLoggerDir=%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger"
-if exist "%autoLoggerDir%\AutoLogger-Diagtrack-Listener.etl" (
-    del "%autoLoggerDir%\AutoLogger-Diagtrack-Listener.etl"
-)
-icacls "%autoLoggerDir%" /deny SYSTEM:(OI)(CI)F
+echo Disabling Scheduled Tasks
+schtasks /change /tn "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser
+schtasks /change /tn "Microsoft\Windows\Application Experience\ProgramDataUpdater" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Application Experience\ProgramDataUpdater
+schtasks /change /tn "Microsoft\Windows\Autochk\Proxy" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Autochk\Proxy
+schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Customer Experience Improvement Program\Consolidator
+schtasks /change /tn "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Customer Experience Improvement Program\UsbCeip
+schtasks /change /tn "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector
+schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClient" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Feedback\Siuf\DmClient
+schtasks /change /tn "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload
+schtasks /change /tn "Microsoft\Windows\Windows Error Reporting\QueueReporting" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Windows Error Reporting\QueueReporting
+schtasks /change /tn "Microsoft\Windows\Application Experience\MareBackup" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Application Experience\MareBackup
+schtasks /change /tn "Microsoft\Windows\Application Experience\StartupAppTask" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Application Experience\StartupAppTask
+schtasks /change /tn "Microsoft\Windows\Application Experience\PcaPatchDbTask" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Application Experience\PcaPatchDbTask
+schtasks /change /tn "Microsoft\Windows\Maps\MapsUpdateTask" /disable >nul 2>&1 || echo WARNUNG: Unable to set Microsoft\Windows\Maps\MapsUpdateTask
 if "!LOGIN_SAFEGUARD!"=="0" (
     call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" "Enabled" REG_DWORD 0
     call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" "DisableLocation" REG_DWORD 1
@@ -418,74 +403,242 @@ if "!LOGIN_SAFEGUARD!"=="0" (
 exit /b
 :do_services
 echo [Services]
-set services_auto=AudioEndpointBuilder Audiosrv BFE BrokerInfrastructure BthAvctpSvc CoreMessagingRegistrar CryptSvc DPS Dhcp Dnscache EventLog EventSystem LanmanServer LanmanWorkstation NaturalAuthentication NgcCtnrSvc NgcSvc NlaSvc ProfSvc Power RpcEptMapper RpcSs SamSs Schedule ShellHWDetection Spooler SysMain Themes UserManager WinDefend Winmgmt WlanSvc gpsvc iphlpsvc mpssvc nsi
-set services_manual=ALG AppIDSvc AppMgmt AppReadiness AppXSvc Appinfo AxInstSV BDESVC BTAGService Browser CDPSvc COMSysApp CertPropSvc ClipSVC CscService DcomLaunch DcpSvc DevQueryBroker DeviceAssociationService DeviceInstall DispBrokerDesktopSvc DisplayEnhancementService DmEnrollmentSvc EFS EapHost EntAppSvc FDResPub Fax FontCache FrameServer FrameServerMonitor GraphicsPerfSvc HvHost IEEtwCollectorService IKEEXT InstallService InventorySvc IpxlatCfgSvc KeyIso KtmRm LicenseManager LxpSvc MSDTC MSiSCSI McpManagementService MicrosoftEdgeElevationService MixedRealityOpenXRSvc MsKeyboardFilter NcaSvc NcbService NcdAutoSetup NetSetupSvc Netman Netprofm Netlogon OneSyncSvc_ PNRPAutoReg PNRPsvc PcaSvc PeerDistSvc PerfHost PhoneSvc PlugPlay PolicyAgent PrintNotify PushToInstall QWAVE RasAuto RasMan RetailDemo RmSvc RpcLocator SCPolicySvc SCardSvr SDRSVC SEMgrSvc SNMPTRAP SSDPSRV ScDeviceEnum SecurityHealthService Sense SensorDataService SensorService SensrSvc SessionEnv SharedAccess SharedRealitySvc SmsRouter SstpSvc StiSvc StorSvc SystemEventsBroker TabletInputService TapiSrv TermService TieringEngineService TimeBroker TimeBrokerSvc TokenBroker TrkWks TroubleshootingSvc TrustedInstaller UI0Detect UmRdpService UsoSvc VSS VacSvc W32Time WEPHOSTSVC WFDSConMgrSvc WMPNetworkSvc WwanSvc WPDBusEnum WSService WaaSMedicSvc WalletService WarpJITSvc WbioSrvc Wcmsvc WcsPlugInService WdNisSvc WdiServiceHost WdiSystemHost WebClient Wecsvc WerSvc WiaRpc WinHttpAutoProxySvc WinRM WpcMonSvc WpnService Wudfsvc bthserv camsvc cloudidsvc dcsvc defragsvc diagnosticshub.standardcollector.service diagsvc dmwappushservice dot3svc edgeupdate edgeupdatem fdPHost fhsvc hidserv icssvc lfsvc lltdsvc lmhosts msiserver p2pimsvc p2psvc perceptionsimulation pla seclogon smphost svsvc swprv tiledatamodelsvc upnphost vds vm3dservice vmicguestinterface vmicheartbeat vmickvpexchange vmicrdv vmicshutdown vmictimesync vmicvmsession vmicvss vmvss wbengine wcncsvc wisvc wlidsvc wlpasvc wmiApSrv workfolderssvc
-set services_disabled=AJRouter AppVClient DiagTrack DialogBlockingService NetTcpPortSharing RemoteAccess RemoteRegistry UevAgentService shpamsvc ssh-agent tzautoupdate uhssvc
-set services_delayed_auto=BITS MapsBroker sppsvc WSearch wscsvc
-for %%s in (!services_manual!) do call :setService "%%s" "manual"
-for %%s in (!services_auto!) do call :setService "%%s" "auto"
-for %%s in (!services_delayed_auto!) do call :setService "%%s" "delayed-auto"
-for %%s in (!services_disabled!) do call :setService "%%s" "disabled"
-echo Setting Wildcard (per-user) Services...
-for %%p in (
-  BcastDVRUserService BluetoothUserService CaptureService CDPUserSvc ConsentUxUserSvc
-  CredentialEnrollmentManagerUserSvc DeviceAssociationBrokerSvc DevicePickerUserSvc
-  DevicesFlowUserSvc MessagingService NPSMSvc P9RdrService PenService
-  PimIndexMaintenanceSvc PrintWorkflowUserSvc UdkUserSvc UnistoreSvc UserDataSvc
-  cbdhsvc webthreatdefusersvc WpnUserService
-) do (
-    for /f "tokens=2" %%i in ('sc query type^= service state^= all ^| find "SERVICE_NAME:" ^| find "%%p_"') do (
-        if /i "%%p"=="CDPUserSvc" (
-            call :setService "%%i" "auto"
-        ) else if /i "%%p"=="webthreatdefusersvc" (
-            call :setService "%%i" "auto"
-        ) else if /i "%%p"=="WpnUserService" (
-            call :setService "%%i" "auto"
-        ) else (
-            call :setService "%%i" "manual"
-        )
-    )
-)
+call :setService "ALG" "manual"
+call :setService "AppIDSvc" "manual"
+call :setService "AppMgmt" "manual"
+call :setService "AppReadiness" "manual"
+call :setService "AppXSvc" "manual"
+call :setService "Appinfo" "manual"
+call :setService "AudioEndpointBuilder" "auto"
+call :setService "AudioSrv" "auto"
+call :setService "Audiosrv" "auto"
+call :setService "AxInstSV" "manual"
+call :setService "BDESVC" "manual"
+call :setService "BFE" "auto"
+call :setService "BTAGService" "manual"
+call :setService "BcastDVRUserService_*" "manual"
+call :setService "BluetoothUserService_*" "manual"
+call :setService "BthAvctpSvc" "auto"
+call :setService "CDPUserSvc_*" "auto"
+call :setService "COMSysApp" "manual"
+call :setService "CaptureService_*" "manual"
+call :setService "CertPropSvc" "manual"
+call :setService "ClipSVC" "manual"
+call :setService "ConsentUxUserSvc_*" "manual"
+call :setService "CoreMessagingRegistrar" "auto"
+call :setService "CredentialEnrollmentManagerUserSvc_*" "manual"
+call :setService "CryptSvc" "auto"
+call :setService "CscService" "manual"
+call :setService "DPS" "auto"
+call :setService "DcomLaunch" "auto"
+call :setService "DevQueryBroker" "manual"
+call :setService "DeviceAssociationBrokerSvc_*" "manual"
+call :setService "DeviceInstall" "manual"
+call :setService "DevicePickerUserSvc_*" "manual"
+call :setService "DevicesFlowUserSvc_*" "manual"
+call :setService "Dhcp" "auto"
+call :setService "DisplayEnhancementService" "manual"
+call :setService "DmEnrollmentSvc" "manual"
+call :setService "Dnscache" "auto"
+call :setService "EFS" "manual"
+call :setService "EapHost" "manual"
+call :setService "EntAppSvc" "manual"
+call :setService "EventLog" "auto"
+call :setService "EventSystem" "auto"
+call :setService "FDResPub" "manual"
+call :setService "FrameServer" "manual"
+call :setService "FrameServerMonitor" "manual"
+call :setService "GraphicsPerfSvc" "manual"
+call :setService "IKEEXT" "manual"
+call :setService "InstallService" "manual"
+call :setService "KtmRm" "manual"
+call :setService "LSM" "auto"
+call :setService "LanmanServer" "auto"
+call :setService "LanmanWorkstation" "auto"
+call :setService "LicenseManager" "manual"
+call :setService "MSDTC" "manual"
+call :setService "MSiSCSI" "manual"
+call :setService "MapsBroker" "delayed-auto"
+call :setService "MessagingService_*" "manual"
+call :setService "MpsSvc" "auto"
+call :setService "NPSMSvc_*" "manual"
+call :setService "NcaSvc" "manual"
+call :setService "NcbService" "manual"
+call :setService "NcdAutoSetup" "manual"
+call :setService "NetSetupSvc" "manual"
+call :setService "NetTcpPortSharing" "disabled"
+call :setService "Netman" "manual"
+call :setService "NgcCtnrSvc" "manual"
+call :setService "NgcSvc" "manual"
+call :setService "OneSyncSvc_*" "auto"
+call :setService "P9RdrService_*" "manual"
+call :setService "PcaSvc" "manual"
+call :setService "PenService_*" "manual"
+call :setService "PerfHost" "manual"
+call :setService "PhoneSvc" "manual"
+call :setService "PimIndexMaintenanceSvc_*" "manual"
+call :setService "PlugPlay" "manual"
+call :setService "PolicyAgent" "manual"
+call :setService "Power" "auto"
+call :setService "PrintNotify" "manual"
+call :setService "PrintWorkflowUserSvc_*" "manual"
+call :setService "ProfSvc" "auto"
+call :setService "PushToInstall" "manual"
+call :setService "QWAVE" "manual"
+call :setService "RasAuto" "manual"
+call :setService "RasMan" "manual"
+call :setService "RemoteAccess" "disabled"
+call :setService "RemoteRegistry" "disabled"
+call :setService "RmSvc" "manual"
+call :setService "RpcEptMapper" "auto"
+call :setService "RpcLocator" "manual"
+call :setService "RpcSs" "auto"
+call :setService "SCardSvr" "manual"
+call :setService "SDRSVC" "manual"
+call :setService "SEMgrSvc" "manual"
+call :setService "SNMPTRAP" "manual"
+call :setService "SNMPTrap" "manual"
+call :setService "SSDPSRV" "manual"
+call :setService "SamSs" "auto"
+call :setService "ScDeviceEnum" "manual"
+call :setService "Schedule" "auto"
+call :setService "SecurityHealthService" "manual"
+call :setService "Sense" "manual"
+call :setService "SensorDataService" "manual"
+call :setService "SensorService" "manual"
+call :setService "SensrSvc" "manual"
+call :setService "SessionEnv" "manual"
+call :setService "SharedAccess" "manual"
+call :setService "ShellHWDetection" "auto"
+call :setService "SstpSvc" "manual"
+call :setService "StiSvc" "manual"
+call :setService "SysMain" "auto"
+call :setService "SystemEventsBroker" "auto"
+call :setService "TapiSrv" "manual"
+call :setService "Themes" "auto"
+call :setService "TieringEngineService" "manual"
+call :setService "TimeBrokerSvc" "manual"
+call :setService "TokenBroker" "manual"
+call :setService "TrustedInstaller" "manual"
+call :setService "UmRdpService" "manual"
+call :setService "UnistoreSvc_*" "manual"
+call :setService "UserDataSvc_*" "manual"
+call :setService "UserManager" "auto"
+call :setService "VSS" "manual"
+call :setService "VaultSvc" "auto"
+call :setService "W32Time" "manual"
+call :setService "WEPHOSTSVC" "manual"
+call :setService "WFDSConMgrSvc" "manual"
+call :setService "WMPNetworkSvc" "manual"
+call :setService "WManSvc" "manual"
+call :setService "WPDBusEnum" "manual"
+call :setService "WSearch" "delayed-auto"
+call :setService "WaaSMedicSvc" "manual"
+call :setService "WbioSrvc" "manual"
+call :setService "WdNisSvc" "manual"
+call :setService "WdiServiceHost" "manual"
+call :setService "WdiSystemHost" "manual"
+call :setService "WebClient" "manual"
+call :setService "Wecsvc" "manual"
+call :setService "WerSvc" "manual"
+call :setService "WiaRpc" "manual"
+call :setService "WinDefend" "auto"
+call :setService "WinHttpAutoProxySvc" "manual"
+call :setService "WinRM" "manual"
+call :setService "Winmgmt" "auto"
+call :setService "WlanSvc" "auto"
+call :setService "WpnUserService_*" "auto"
+call :setService "autotimesvc" "manual"
+call :setService "bthserv" "manual"
+call :setService "camsvc" "manual"
+call :setService "cbdhsvc_*" "manual"
+call :setService "defragsvc" "manual"
+call :setService "diagsvc" "manual"
+call :setService "dot3svc" "manual"
+call :setService "edgeupdatem" "manual"
+call :setService "fdPHost" "manual"
+call :setService "fhsvc" "manual"
+call :setService "gpsvc" "auto"
+call :setService "hidserv" "manual"
+call :setService "icssvc" "manual"
+call :setService "iphlpsvc" "auto"
+call :setService "lfsvc" "manual"
+call :setService "lltdsvc" "manual"
+call :setService "lmhosts" "manual"
+call :setService "mpssvc" "auto"
+call :setService "msiserver" "manual"
+call :setService "netprofm" "manual"
+call :setService "nsi" "auto"
+call :setService "pla" "manual"
+call :setService "seclogon" "manual"
+call :setService "smphost" "manual"
+call :setService "sppsvc" "delayed-auto"
+call :setService "svsvc" "manual"
+call :setService "swprv" "manual"
+call :setService "upnphost" "manual"
+call :setService "vds" "manual"
+call :setService "wbengine" "manual"
+call :setService "wcncsvc" "manual"
+call :setService "webthreatdefusersvc_*" "auto"
+call :setService "wlidsvc" "manual"
+call :setService "wmiApSrv" "manual"
+call :setService "wscsvc" "delayed-auto"
+call :setService "wuauserv" "manual"
+call :setService "wudfsvc" "manual"
 exit /b
 :do_gaming
 echo [Gaming]
-call :addReg "HKCU\System\GameConfigStore" "GameDVR_Enabled" REG_DWORD 0
 call :addReg "HKCU\System\GameConfigStore" "GameDVR_FSEBehavior" REG_DWORD 2
-call :addReg "HKCU\System\GameConfigStore" "GameDVR_DXGIHonorFSEWindowsCompatible" REG_DWORD 1
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_Enabled" REG_DWORD 0
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_HonorUserFSEBehaviorMode" REG_DWORD 1
+call :addReg "HKCU\System\GameConfigStore" "GameDVR_EFSEFeatureFlags" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" "AllowGameDVR" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" "SystemResponsiveness" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" "NetworkThrottlingIndex" REG_DWORD 4294967295
-call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "GPU Priority" REG_DWORD 8
-call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "Priority" REG_DWORD 6
-call :addReg "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile\Tasks\Games" "Scheduling Category" REG_SZ High
-call :addReg "HKCU\System\GameConfigStore" "GameDVR_HonorUserFSEBehaviorMode" REG_DWORD 1
-call :addReg "HKCU\System\GameConfigStore" "GameDVR_EFSEFeatureFlags" REG_DWORD 0
-call :addReg "HKCU\System\GameConfigStore" "GameDVR_FSEBehavior" REG_DWORD 2
-for /f "tokens=1,2,*" %%a in ('wmic memorychip get capacity ^| find /i " " ^| find "."') do set ram=%%c
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Control" "SvcHostSplitThresholdInKB" REG_DWORD !ram!
 exit /b
 :do_ui
 echo [UI]
-call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "LaunchTo" REG_DWORD 1
+call :addReg "HKEY_USERS\.DEFAULT\Control Panel\Keyboard" "InitialKeyboardIndicators" REG_DWORD 2
+call :addReg "HKCU\Control Panel\Keyboard" "InitialKeyboardIndicators" REG_DWORD 2
+call :addReg "HKEY_USERS\.DEFAULT\Control Panel\Keyboard" "InitialKeyboardIndicators" REG_DWORD 0
+call :addReg "HKCU\Control Panel\Keyboard" "InitialKeyboardIndicators" REG_DWORD 0
+call :addReg "HKCU\Control Panel\Accessibility\StickyKeys" "Flags" REG_DWORD 510
+call :addReg "HKCU\Control Panel\Accessibility\StickyKeys" "Flags" REG_DWORD 58
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" "EnthusiastMode" REG_DWORD 1
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "ShowTaskViewButton" REG_DWORD 0
 call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" "PeopleBand" REG_DWORD 0
-call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" "HideSCAMeetNow" REG_DWORD 1
+call :addReg "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" "LaunchTo" REG_DWORD 1
+call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\FileSystem" "LongPathsEnabled" REG_DWORD 1
+call :addReg "HKCU\Control Panel\Desktop" "AutoEndTasks" REG_DWORD 1
+call :addReg "HKCU\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" "EnableFeeds" REG_DWORD 0
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" "ShellFeedsTaskbarViewMode" REG_DWORD 2
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "HideSCAMeetNow" REG_DWORD 1
+call :addReg "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" "ScoobeSystemSettingEnabled" REG_DWORD 0
+call :delKey "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags"
+call :delKey "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\BagMRU"
+reg add "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" /f >nul 2>&1
+call :addReg "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell" "FolderType" REG_SZ "NotSpecified"
+echo Please sign out and back in or restart your computer to apply the changes!
 exit /b
 :do_network
 echo [Network]
 call :addReg "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" "Value" REG_DWORD 0
 call :addReg "HKLM\Software\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" "Value" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DeliveryOptimization\Config" "DODownloadMode" REG_DWORD 0
+call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" "DODownloadMode" REG_DWORD 0
+call :addReg "HKLM\SYSTEM\ControlSet001\Services\Ndu" "Start" REG_DWORD 2
+call :addReg "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" "IRPStackSize" REG_DWORD 30
 exit /b
 :do_power
 echo [Power]
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Power" "HibernateEnabled" REG_DWORD 0
+call :addReg "HKLM\System\CurrentControlSet\Control\Session Manager\Power" "HibernateEnabled" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" "ShowHibernateOption" REG_DWORD 0
-powercfg /hibernate off >nul 2>&1
-call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" "HibernateEnabled" REG_DWORD 0
+call :addReg "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" "ClearPageFileAtShutdown" REG_DWORD 0
 exit /b
 :do_cleanup
 echo [Cleanup]
-for %%D in ("%TEMP%" "%LocalAppData%\Temp") do (
+echo Cleaning temp files, prefetch, software distribution, event logs, WER reports...
+for %%D in ("%TEMP%") do (
     if exist "%%~fD" (
         echo clean %%~fD
         del /f /s /q "%%~fD\*.*" >nul 2>&1
@@ -497,20 +650,18 @@ if exist "%LocalAppData%\Microsoft\Windows\Explorer" (
 if exist "%LocalAppData%\Microsoft\Windows\INetCache" (
     rd /s /q "%LocalAppData%\Microsoft\Windows\INetCache" >nul 2>&1
 )
-rd /s /q C:\Windows\Temp
-rd /s /q %TEMP%
-rd /s /q C:\Windows\Prefetch
-rd /s /q %SystemDrive%\$Recycle.Bin
-net stop wuauserv
-rd /s /q C:\Windows\SoftwareDistribution
-net start wuauserv
-for /F "tokens=*" %%G in ('wevtutil el') do (wevtutil cl "%%G")
-rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportQueue
-rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportArchive
-rd /s /q C:\Windows.old
-rd /s /q %LocalAppData%\DirectX Shader Cache
-del /f /s /q /a %LocalAppData%\Microsoft\Windows\Explorer\thumbcache_*.db
-echo (Skipped Prefetch/EventLog/WER deletions for safety)
+rd /s /q C:\Windows\Temp >nul 2>&1
+rd /s /q C:\Windows\Prefetch >nul 2>&1
+rd /s /q %SystemDrive%\$Recycle.Bin >nul 2>&1
+net stop wuauserv >nul 2>&1
+rd /s /q C:\Windows\SoftwareDistribution >nul 2>&1
+net start wuauserv >nul 2>&1
+for /F "tokens=*" %%G in ('wevtutil el') do (wevtutil cl "%%G" >nul 2>&1)
+rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportQueue >nul 2>&1
+rd /s /q C:\ProgramData\Microsoft\Windows\WER\ReportArchive >nul 2>&1
+rd /s /q C:\Windows.old >nul 2>&1
+rd /s /q %LocalAppData%\DirectX Shader Cache >nul 2>&1
+del /f /s /q /a %LocalAppData%\Microsoft\Windows\Explorer\thumbcache_*.db >nul 2>&1
 exit /b
 :do_boot_legacy
 echo [Boot]
@@ -520,7 +671,6 @@ exit /b
 echo [Mitigations]
 echo Disabling mitigations reduces security. Proceeding...
 powershell -NoProfile -Command "$flags = 'DEP','ASLR','SEHOP','ForceRelocateImages','BottomUp','HighEntropy','StrictHandle','DisableWin32kSysCalls','CFG','StrictCFG'; foreach($f in $flags){ try{ Set-ProcessMitigation -System -Disable $f -ErrorAction Stop } catch {} }" >nul 2>&1
-powershell -Command "& {ForEach($v in (Get-Command -Name 'Set-ProcessMitigation').Parameters['Disable'].Attributes.ValidValues){Set-ProcessMitigation -System -Disable $v.ToString() -ErrorAction SilentlyContinue}}"
 powershell -Command "& {Remove-Item -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\*' -Recurse -ErrorAction SilentlyContinue}"
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\FVE" "DisableExternalDMAUnderLock" REG_DWORD 0
 call :addReg "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" "EnableVirtualizationBasedSecurity" REG_DWORD 0
